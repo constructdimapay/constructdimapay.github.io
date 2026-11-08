@@ -39,32 +39,50 @@
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col protected-content" oncontextmenu="return false;">
 
-    <!-- ЭКРАН ВХОДА -->
+    <!-- ЭКРАН ВХОДА / РЕГИСТРАЦИИ (Без предзаполненного мусора) -->
     <div id="loginScreen" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 border border-slate-800">
-            <div class="text-center mb-8">
+            <div class="text-center mb-6">
                 <div class="inline-flex items-center space-x-2 mb-3">
                     <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black px-3 py-1.5 rounded-lg text-xl">DP</span>
                     <span class="font-bold text-2xl text-slate-900">DimaPay <span class="text-orange-500">Helper</span></span>
                 </div>
-                <p class="text-xs text-gray-500">Авторизация в панели конструктора и тарифов</p>
+                <p id="authSubtitle" class="text-xs text-gray-500">Введите логин и пароль для входа</p>
             </div>
-            <form onsubmit="handleLogin(event)" class="space-y-5">
+
+            <!-- Форма Входа -->
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">Логин</label>
-                    <input type="text" id="loginUser" value="admin" class="w-full border rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500" required>
+                    <input type="text" id="loginUser" autocomplete="off" placeholder="Введите логин" class="w-full border rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500" required>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">Пароль</label>
-                    <input type="password" id="loginPass" value="dimaDurov12@" class="w-full border rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500" required>
+                    <input type="password" id="loginPass" autocomplete="new-password" placeholder="Введите пароль" class="w-full border rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500" required>
                 </div>
+                
+                <!-- Поле выбора тарифа (скрыто при входе, показывается при регистрации) -->
+                <div id="tariffFieldBox" class="hidden">
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">Выберите тариф</label>
+                    <select id="regTariff" class="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white">
+                        <option value="Лайт (до 10 страниц)">Лайт (до 10 страниц, 0 ₽)</option>
+                        <option value="Премиум (до 30 страниц)" selected>Премиум (до 30 страниц, 200 ₽)</option>
+                        <option value="Ультра премиум (до 100 страниц)">Ультра премиум (до 100 страниц, 568 ₽)</option>
+                    </select>
+                </div>
+
                 <div id="loginError" class="text-red-500 text-xs font-medium hidden text-center">Неверный логин или пароль</div>
-                <button type="submit" class="w-full bg-tilda-red hover:bg-orange-600 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg">Войти в систему</button>
+                
+                <button type="submit" id="authSubmitBtn" class="w-full bg-tilda-red hover:bg-orange-600 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg">Войти в систему</button>
             </form>
+
+            <div class="mt-6 text-center text-xs">
+                <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-orange-600 hover:underline font-semibold">Нет аккаунта? Зарегистрироваться (создать пользователя)</button>
+            </div>
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС КОНСТРУКТОРА -->
     <div id="appScreen" class="hidden flex-col min-h-screen">
         <header class="bg-tilda-dark text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-40">
             <div class="flex items-center space-x-4">
@@ -84,7 +102,7 @@
                     <i class="fa-solid fa-layer-group"></i> Готовые страницы
                 </button>
                 <button onclick="openModal('userMgmtModal')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-users-gear"></i> Тарифы
+                    <i class="fa-solid fa-users-gear"></i> Пользователи
                 </button>
                 <button onclick="openModal('wpModal')" class="bg-gray-800 hover:bg-gray-700 text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
                     <i class="fa-brands fa-wordpress text-blue-400"></i> БД
@@ -146,7 +164,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: Готовые страницы (Шаблоны) -->
+    <!-- МОДАЛКА: Готовые страницы -->
     <div id="templatesModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 relative">
             <button onclick="closeModal('templatesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -161,14 +179,14 @@
                     <p class="text-xs text-gray-500 mt-0.5">Галерея товара, отзывы, анкета заказа и оплата DimaPay.</p>
                 </button>
                 <button onclick="loadTemplate('success')" class="text-left p-4 border rounded-xl hover:border-purple-500 hover:bg-purple-50/50 transition">
-                    <h4 class="font-bold text-sm text-gray-800">Страница благодарности (Премиум активна)</h4>
+                    <h4 class="font-bold text-sm text-gray-800">Страница благодарности</h4>
                     <p class="text-xs text-gray-500 mt-0.5">Заголовок поздравления и управление подпиской.</p>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛКА: Управление пользователями и тарифами -->
+    <!-- МОДАЛКА: Управление пользователями -->
     <div id="userMgmtModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 relative">
             <button onclick="closeModal('userMgmtModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -253,34 +271,76 @@
         let usersList = [{ login: 'admin', pass: 'dimaDurov12@', tariff: 'Премиум (до 30 страниц)' }];
         let selectedBlock = null;
         let currentPageTitle = "Мой сайт DimaPay";
+        let isRegisterMode = false;
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            const subtitle = document.getElementById('authSubtitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleBtn = document.getElementById('toggleAuthBtn');
+            const tariffBox = document.getElementById('tariffFieldBox');
+
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+
+            if(isRegisterMode) {
+                subtitle.innerText = "Создание нового пользователя (Регистрация)";
+                submitBtn.innerText = "Зарегистрироваться";
+                toggleBtn.innerText = "Уже есть аккаунт? Войти";
+                tariffBox.classList.remove('hidden');
+            } else {
+                subtitle.innerText = "Введите логин и пароль для входа";
+                submitBtn.innerText = "Войти в систему";
+                toggleBtn.innerText = "Нет аккаунта? Зарегистрироваться (создать пользователя)";
+                tariffBox.classList.add('hidden');
+            }
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const loginInput = document.getElementById('loginUser').value.trim();
+            const passInput = document.getElementById('loginPass').value.trim();
+            const errDiv = document.getElementById('loginError');
+
+            if(isRegisterMode) {
+                // Регистрация нового пользователя
+                const tariff = document.getElementById('newTariff').value;
+                if(usersList.some(u => u.login === loginInput)) {
+                    errDiv.innerText = "Такой логин уже занят!";
+                    errDiv.classList.remove('hidden');
+                    return;
+                }
+                usersList.push({ login: loginInput, pass: passInput, tariff: tariff });
+                alert(`Пользователь ${loginInput} успешно создан! Теперь выполните вход.`);
+                toggleAuthMode();
+            } else {
+                // Вход
+                const foundUser = usersList.find(u => u.login === loginInput && u.pass === passInput);
+                if (foundUser) {
+                    errDiv.classList.add('hidden');
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('appScreen').classList.remove('hidden');
+                    document.getElementById('appScreen').classList.add('flex');
+                    renderUserTable();
+                } else {
+                    errDiv.innerText = "Неверный логин или пароль";
+                    errDiv.classList.remove('hidden');
+                }
+            }
+        }
 
         function changePageTitle(val) {
             currentPageTitle = val || "Сайт DimaPay";
             document.getElementById('pageTitleMeta').innerText = currentPageTitle;
         }
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const loginInput = document.getElementById('loginUser').value;
-            const passInput = document.getElementById('loginPass').value;
-            const errDiv = document.getElementById('loginError');
-            const foundUser = usersList.find(u => u.login === loginInput && u.pass === passInput);
-
-            if (foundUser) {
-                errDiv.classList.add('hidden');
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('appScreen').classList.remove('hidden');
-                document.getElementById('appScreen').classList.add('flex');
-                renderUserTable();
-            } else {
-                errDiv.classList.remove('hidden');
-            }
-        }
-
         function logout() {
             document.getElementById('appScreen').classList.add('hidden');
             document.getElementById('appScreen').classList.remove('flex');
             document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
         }
 
         function renderUserTable() {
@@ -335,19 +395,13 @@
             footer: `<footer class="py-6 px-4 bg-tilda-dark text-gray-400 text-xs text-center"><p>© 2026 DimaPay Helper. Все права защищены.</p></footer>`
         };
 
-        // Загрузка готовых страниц (шаблонов)
         function loadTemplate(type) {
             const canvas = document.getElementById('canvas');
             canvas.innerHTML = '';
-            
             let blocksToLoad = [];
-            if(type === 'landing') {
-                blocksToLoad = ['hero', 'article', 'tariffs', 'payment', 'footer'];
-            } else if(type === 'shop') {
-                blocksToLoad = ['hero', 'gallery', 'formBlock', 'payment', 'footer'];
-            } else if(type === 'success') {
-                blocksToLoad = ['title', 'formBlock', 'footer'];
-            }
+            if(type === 'landing') blocksToLoad = ['hero', 'article', 'tariffs', 'payment', 'footer'];
+            else if(type === 'shop') blocksToLoad = ['hero', 'gallery', 'formBlock', 'payment', 'footer'];
+            else if(type === 'success') blocksToLoad = ['title', 'formBlock', 'footer'];
 
             blocksToLoad.forEach(bType => {
                 const wrapper = document.createElement('div');
