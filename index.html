@@ -72,7 +72,7 @@
                     <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black px-2.5 py-1 rounded text-lg">DP</span>
                     <span class="font-bold text-lg">DimaPay <span class="text-orange-400">Helper</span></span>
                 </div>
-                <!-- Изменение названия страницы прямо в шапке -->
+                <!-- Название страницы -->
                 <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
                     <i class="fa-solid fa-pen text-xs text-orange-400"></i>
                     <input type="text" id="pageTitleInput" value="Мой сайт DimaPay" oninput="changePageTitle(this.value)" class="bg-transparent text-xs text-white outline-none font-medium w-40" title="Изменить название страницы">
@@ -80,6 +80,9 @@
             </div>
 
             <div class="flex items-center space-x-3">
+                <button onclick="openModal('templatesModal')" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-layer-group"></i> Готовые страницы
+                </button>
                 <button onclick="openModal('userMgmtModal')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-users-gear"></i> Тарифы
                 </button>
@@ -104,6 +107,7 @@
                     <button onclick="addBlock('hero')" class="w-full text-left p-2.5 border rounded-lg hover:border-tilda-red bg-white flex items-center justify-between"><span><i class="fa-solid fa-desktop mr-2 text-gray-400"></i>Обложка</span><i class="fa-solid fa-plus text-gray-300"></i></button>
                     <button onclick="addBlock('title')" class="w-full text-left p-2.5 border rounded-lg hover:border-tilda-red bg-white flex items-center justify-between"><span><i class="fa-solid fa-heading mr-2 text-gray-400"></i>Заголовок</span><i class="fa-solid fa-plus text-gray-300"></i></button>
                     <button onclick="addBlock('article')" class="w-full text-left p-2.5 border rounded-lg hover:border-tilda-red bg-white flex items-center justify-between"><span><i class="fa-solid fa-newspaper mr-2 text-gray-400"></i>Текстовый блок</span><i class="fa-solid fa-plus text-gray-300"></i></button>
+                    <button onclick="addBlock('formBlock')" class="w-full text-left p-2.5 border rounded-lg hover:border-tilda-red bg-white flex items-center justify-between"><span><i class="fa-solid fa-file-lines mr-2 text-gray-400"></i>Анкета / Заявка</span><i class="fa-solid fa-plus text-gray-300"></i></button>
                     <button onclick="addBlock('authWidget')" class="w-full text-left p-2.5 border rounded-lg hover:border-tilda-red bg-white flex items-center justify-between"><span><i class="fa-solid fa-right-to-bracket mr-2 text-gray-400"></i>Авторизация</span><i class="fa-solid fa-plus text-gray-300"></i></button>
                     <button onclick="addBlock('tariffs')" class="w-full text-left p-2.5 border rounded-lg hover:border-tilda-red bg-white flex items-center justify-between"><span><i class="fa-solid fa-tags mr-2 text-gray-400"></i>Тарифы</span><i class="fa-solid fa-plus text-gray-300"></i></button>
                     <button onclick="addBlock('payment')" class="w-full text-left p-2.5 border rounded-lg hover:border-tilda-red bg-white flex items-center justify-between"><span><i class="fa-solid fa-credit-card mr-2 text-gray-400"></i>Оплата</span><i class="fa-solid fa-plus text-gray-300"></i></button>
@@ -125,7 +129,7 @@
                         </div>
                         <section class="py-20 px-8 text-center bg-gradient-to-b from-slate-900 to-slate-800 text-white">
                             <h1 class="editable text-4xl md:text-5xl font-extrabold mb-4" contenteditable="true">Создавайте сайты с DimaPay Helper</h1>
-                            <p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Удобный конструктор сайтов и платежных виджетов.</p>
+                            <p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Удобный конструктор сайтов, готовые страницы и анкеты.</p>
                             <button class="editable bg-tilda-red text-white px-8 py-3.5 rounded-lg font-bold transition shadow-lg" contenteditable="true">Начать работу</button>
                         </section>
                     </div>
@@ -139,6 +143,28 @@
                     <p class="text-gray-400 italic">Кликните по блоку на холсте для настройки.</p>
                 </div>
             </aside>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА: Готовые страницы (Шаблоны) -->
+    <div id="templatesModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 relative">
+            <button onclick="closeModal('templatesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-layer-group text-purple-600"></i> Выберите готовую страницу</h3>
+            <div class="grid grid-cols-1 gap-3">
+                <button onclick="loadTemplate('landing')" class="text-left p-4 border rounded-xl hover:border-purple-500 hover:bg-purple-50/50 transition">
+                    <h4 class="font-bold text-sm text-gray-800">Лендинг продукта / Курса</h4>
+                    <p class="text-xs text-gray-500 mt-0.5">Обложка, описание, тарифы и форма оплаты.</p>
+                </button>
+                <button onclick="loadTemplate('shop')" class="text-left p-4 border rounded-xl hover:border-purple-500 hover:bg-purple-50/50 transition">
+                    <h4 class="font-bold text-sm text-gray-800">Интернет-магазин</h4>
+                    <p class="text-xs text-gray-500 mt-0.5">Галерея товара, отзывы, анкета заказа и оплата DimaPay.</p>
+                </button>
+                <button onclick="loadTemplate('success')" class="text-left p-4 border rounded-xl hover:border-purple-500 hover:bg-purple-50/50 transition">
+                    <h4 class="font-bold text-sm text-gray-800">Страница благодарности (Премиум активна)</h4>
+                    <p class="text-xs text-gray-500 mt-0.5">Заголовок поздравления и управление подпиской.</p>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -185,7 +211,7 @@
                     <input type="checkbox" id="includeWatermark" checked class="w-4 h-4 text-orange-500 rounded">
                     <div>
                         <span class="font-bold block text-gray-800">Оставить водяной знак DimaPay</span>
-                        <span class="text-xs text-gray-500">Добавляет фирменный блок в низ страницы</span>
+                        <span class="text-xs text-gray-500">Добавляет фирменный блок в низ скачанной страницы</span>
                     </div>
                 </label>
             </div>
@@ -299,6 +325,7 @@
             hero: `<section class="py-20 px-8 text-center bg-gradient-to-b from-slate-900 to-slate-800 text-white"><h1 class="editable text-4xl md:text-5xl font-extrabold mb-4" contenteditable="true">Обложка сайта</h1><p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Главный экран с призывом к действию.</p><button class="editable bg-tilda-red text-white px-8 py-3 rounded-lg font-bold" contenteditable="true">Кнопка</button></section>`,
             title: `<section class="py-12 px-8 text-center bg-white"><h2 class="editable text-3xl font-bold mb-2" contenteditable="true">Заголовок блока</h2><p class="editable text-gray-500" contenteditable="true">Подзаголовок или описание раздела.</p></section>`,
             article: `<section class="py-12 px-8 bg-white max-w-3xl mx-auto"><h2 class="editable text-2xl font-bold mb-4" contenteditable="true">Текстовая статья</h2><p class="editable text-gray-600 leading-relaxed" contenteditable="true">Подробный текст вашей публикации.</p></section>`,
+            formBlock: `<section class="py-12 px-6 bg-slate-50 flex justify-center"><div class="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border"><h2 class="editable text-xl font-bold text-center mb-4" contenteditable="true">Заполнить анкету</h2><input type="text" placeholder="Ваше Имя" class="w-full border mb-3 p-2 rounded text-sm"><input type="email" placeholder="Email / Телефон" class="w-full border mb-3 p-2 rounded text-sm"><textarea placeholder="Ваш вопрос или комментарий" class="w-full border mb-3 p-2 rounded text-sm h-20"></textarea><button class="w-full bg-tilda-red text-white py-2.5 rounded font-bold text-sm">Отправить заявку</button></div></section>`,
             authWidget: `<section class="py-12 px-6 bg-slate-50 flex justify-center"><div class="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border"><h2 class="editable text-xl font-bold text-center mb-4" contenteditable="true">Авторизация DimaPay</h2><input type="text" placeholder="Логин" class="w-full border mb-3 p-2 rounded text-sm"><input type="password" placeholder="Пароль" class="w-full border mb-3 p-2 rounded text-sm"><button class="w-full bg-slate-900 text-white py-2.5 rounded font-bold text-sm">Войти</button></div></section>`,
             tariffs: `<section class="py-12 px-6 bg-white"><h2 class="editable text-2xl font-bold text-center mb-6" contenteditable="true">Тарифные планы</h2><div class="grid grid-cols-2 gap-4"><div class="border p-4 rounded text-center"><h3 class="font-bold">Лайт (10 страниц)</h3><p class="text-xl font-bold my-2">0 ₽</p></div><div class="border-2 border-tilda-red p-4 rounded text-center bg-orange-50/30"><h3 class="font-bold text-tilda-red">Премиум (30 стр)</h3><p class="text-xl font-bold my-2">200 ₽</p></div></div></section>`,
             payment: `<section class="py-8 px-6 bg-slate-900 text-white text-center"><h3 class="font-bold text-lg mb-2">Оплата заказа</h3><button class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm">Оплатить через DimaPay</button></section>`,
@@ -307,6 +334,37 @@
             reviews: `<section class="py-12 px-6 bg-white text-center"><h2 class="editable text-xl font-bold mb-6" contenteditable="true">Отзывы клиентов</h2><div class="bg-gray-50 p-4 rounded-lg border max-w-xl mx-auto"><p class="editable text-xs italic text-gray-600" contenteditable="true">"Отличный сервис!"</p></div></section>`,
             footer: `<footer class="py-6 px-4 bg-tilda-dark text-gray-400 text-xs text-center"><p>© 2026 DimaPay Helper. Все права защищены.</p></footer>`
         };
+
+        // Загрузка готовых страниц (шаблонов)
+        function loadTemplate(type) {
+            const canvas = document.getElementById('canvas');
+            canvas.innerHTML = '';
+            
+            let blocksToLoad = [];
+            if(type === 'landing') {
+                blocksToLoad = ['hero', 'article', 'tariffs', 'payment', 'footer'];
+            } else if(type === 'shop') {
+                blocksToLoad = ['hero', 'gallery', 'formBlock', 'payment', 'footer'];
+            } else if(type === 'success') {
+                blocksToLoad = ['title', 'formBlock', 'footer'];
+            }
+
+            blocksToLoad.forEach(bType => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'block-wrapper group relative border border-transparent hover:border-tilda-red transition-all';
+                wrapper.innerHTML = `
+                    <div class="absolute right-3 top-3 hidden group-hover:flex items-center gap-1 bg-white border p-1 rounded shadow-md z-30">
+                        <button onclick="moveUp(this)" class="p-1 text-gray-600"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button onclick="moveDown(this)" class="p-1 text-gray-600"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button onclick="removeBlock(this)" class="p-1 text-red-600"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    ${templates[bType]}
+                `;
+                canvas.appendChild(wrapper);
+            });
+            closeModal('templatesModal');
+            alert('Готовая страница успешно загружена!');
+        }
 
         function addBlock(type) {
             const canvas = document.getElementById('canvas');
