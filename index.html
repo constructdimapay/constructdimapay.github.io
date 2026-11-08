@@ -3,29 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DimaPay Helper</title>
+    <title>DimaPay Helper — Конструктор сайтов</title>
+    <!-- Мета-теги защиты от импорта и копирования -->
+    <meta name="author" content="DimaPay Helper">
+    <meta name="copyright" content="Copyright © 2026 DimaPay Helper. All Rights Reserved. Protected against unauthorized import and duplication.">
+    <meta name="robots" content="noindex, noarchive">
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tilda: {
+                            red: '#ff8562',
+                            dark: '#111111',
+                            panel: '#1a1a1a',
+                            light: '#f5f5f5'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .editable:focus { outline: 2px dashed #ff8562; background-color: rgba(255, 133, 98, 0.05); }
-        .dimapay-watermark {
-            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        /* Защита против импорта и копирования кода */
+        .protected-content {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .editable:focus {
+            outline: 2px dashed #ff8562;
+            background-color: rgba(255, 133, 98, 0.05);
+        }
+
+        /* Фирменный черный водяной знак */
+        .dimapay-watermark-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 48px;
+            background-color: #0f0f0f;
+            border-top: 1px solid #1f1f1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .dimapay-watermark-text {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        .dimapay-watermark-text a {
+            text-decoration: none;
+        }
+
+        .dimapay-watermark-text a:hover span {
+            text-decoration: underline;
+        }
+
+        .dimapay-watermark-text span {
+            color: #ff8562;
+            font-weight: 700;
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col">
+<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col protected-content" oncontextmenu="return false;">
 
-    <!-- ЭКРАН ВХОДА -->
-    <div id="loginScreen" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 border border-slate-700/50">
+    <!-- 1. ЭКРАН ВХОДА -->
+    <div id="loginScreen" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 border border-slate-800">
             <div class="text-center mb-8">
                 <div class="inline-flex items-center space-x-2 mb-3">
                     <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black px-3 py-1.5 rounded-lg text-xl">DP</span>
-                    <span class="font-bold text-2xl text-slate-800">DimaPay <span class="text-orange-500">Helper</span></span>
+                    <span class="font-bold text-2xl text-slate-900">DimaPay <span class="text-orange-500">Helper</span></span>
                 </div>
-                <p class="text-sm text-gray-500">Введите логин и пароль для доступа к конструктору</p>
+                <p class="text-xs text-gray-500">Защищенная система управления сайтом и блоками</p>
             </div>
 
             <form onsubmit="handleLogin(event)" class="space-y-5">
@@ -33,7 +100,7 @@
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">Логин</label>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-400 text-sm"></i>
-                        <input type="text" id="loginUser" value="admin" class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none" placeholder="Логин" required>
+                        <input type="text" id="loginUser" value="admin" class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none" required>
                     </div>
                 </div>
 
@@ -41,77 +108,107 @@
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">Пароль</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-400 text-sm"></i>
-                        <input type="password" id="loginPass" value="dimaDurov12@" class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none" placeholder="Пароль" required>
+                        <input type="password" id="loginPass" value="dimaDurov12@" class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none" required>
                     </div>
                 </div>
 
                 <div id="loginError" class="text-red-500 text-xs font-medium hidden text-center">Неверный логин или пароль</div>
 
-                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-orange-500/30">
+                <button type="submit" class="w-full bg-tilda-red hover:bg-orange-600 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-orange-500/30">
                     Войти в систему
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС КОНСТРУКТОРА -->
-    <div id="appScreen" class="hidden flex-col min-h-screen">
-        <header class="bg-slate-900 text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-40">
+    <!-- 2. ОСНОВНОЙ ИНТЕРФЕЙС КОНСТРУКТОРА -->
+    <div id="appScreen" class="hidden flex-col min-h-screen pb-12">
+        
+        <!-- Верхняя панель -->
+        <header class="bg-tilda-dark text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-40">
             <div class="flex items-center space-x-4">
                 <div class="flex items-center space-x-2">
                     <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black px-2.5 py-1 rounded text-lg tracking-wider">DP</span>
                     <span class="font-bold text-lg tracking-tight">DimaPay <span class="text-orange-400">Helper</span></span>
                 </div>
                 <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30 font-medium flex items-center gap-1">
-                    <i class="fa-solid fa-crown text-amber-400"></i> Премиум Тариф
+                    <i class="fa-solid fa-shield-halved text-amber-400"></i> Protected Import
                 </span>
             </div>
 
             <div class="flex items-center space-x-3">
                 <button onclick="openModal('userMgmtModal')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-users-gear"></i> Пользователи (Админка)
+                    <i class="fa-solid fa-users-gear"></i> Админка пользователей
                 </button>
-                <button onclick="openModal('wpModal')" class="bg-gray-700 hover:bg-gray-600 text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
-                    <i class="fa-brands fa-wordpress text-blue-400"></i> База Данных WP
+                <button onclick="openModal('wpModal')" class="bg-gray-800 hover:bg-gray-700 text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
+                    <i class="fa-brands fa-wordpress text-blue-400"></i> WordPress & БД
                 </button>
-                <button onclick="openModal('widgetModal')" class="bg-gray-700 hover:bg-gray-600 text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-code text-amber-400"></i> Код Виджета
+                <button onclick="openModal('widgetModal')" class="bg-gray-800 hover:bg-gray-700 text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-code text-amber-400"></i> Виджет
                 </button>
-                <button onclick="exportHTML()" class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-4 py-2 rounded flex items-center gap-1.5 transition shadow">
-                    <i class="fa-solid fa-download"></i> Скачать HTML
+                <button onclick="exportHTML()" class="bg-tilda-red hover:bg-orange-600 text-white text-xs font-semibold px-4 py-2 rounded flex items-center gap-1.5 transition shadow">
+                    <i class="fa-solid fa-download"></i> Экспорт HTML
                 </button>
-                <div class="h-6 w-px bg-gray-700 mx-1"></div>
+                <div class="h-6 w-px bg-gray-800 mx-1"></div>
                 <button onclick="logout()" class="bg-red-600/80 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded transition">
-                    <i class="fa-solid fa-right-from-bracket"></i> Выход
+                    <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
         </header>
 
+        <!-- Рабочая область -->
         <div class="flex flex-1 overflow-hidden">
-            <aside class="w-72 bg-white border-r border-gray-200 p-4 flex flex-col gap-4 overflow-y-auto">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Добавить блоки</h3>
+            <!-- Библиотека блоков -->
+            <aside class="w-80 bg-white border-r border-gray-200 p-4 flex flex-col gap-4 overflow-y-auto">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Библиотека Блоков</h3>
                 <div class="space-y-2">
-                    <button onclick="addBlock('hero')" class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-orange-500 transition bg-white font-semibold text-sm">
-                        <i class="fa-solid fa-desktop mr-2 text-gray-400"></i>Главная обложка
+                    <button onclick="addBlock('hero')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-desktop mr-2 text-gray-400"></i>Главная обложка</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
                     </button>
-                    <button onclick="addBlock('authWidget')" class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-orange-500 transition bg-white font-semibold text-sm">
-                        <i class="fa-solid fa-right-to-bracket mr-2 text-gray-400"></i>Форма Авторизации
+                    <button onclick="addBlock('authWidget')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-right-to-bracket mr-2 text-gray-400"></i>Форма Авторизации</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
                     </button>
-                    <button onclick="addBlock('tariffs')" class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-orange-500 transition bg-white font-semibold text-sm">
-                        <i class="fa-solid fa-tags mr-2 text-gray-400"></i>Тарифные планы
+                    <button onclick="addBlock('tariffs')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-tags mr-2 text-gray-400"></i>Тарифные планы</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
                     </button>
-                    <button onclick="addBlock('payment')" class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-orange-500 transition bg-white font-semibold text-sm">
-                        <i class="fa-solid fa-credit-card mr-2 text-gray-400"></i>Оплата DimaPay
+                    <button onclick="addBlock('payment')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-credit-card mr-2 text-gray-400"></i>Модуль оплаты DimaPay</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
                     </button>
-                    <button onclick="addBlock('footer')" class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-orange-500 transition bg-white font-semibold text-sm">
-                        <i class="fa-solid fa-bullhorn mr-2 text-gray-400"></i>Подвал сайта
+                    <button onclick="addBlock('article')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-newspaper mr-2 text-gray-400"></i>Статья / Текст</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
+                    </button>
+                    <button onclick="addBlock('gallery')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-images mr-2 text-gray-400"></i>Галерея и карточки</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
+                    </button>
+                    <button onclick="addBlock('faq')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-circle-question mr-2 text-gray-400"></i>Вопросы и ответы (FAQ)</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
+                    </button>
+                    <button onclick="addBlock('team')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-user-group mr-2 text-gray-400"></i>Команда</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
+                    </button>
+                    <button onclick="addBlock('reviews')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-comments mr-2 text-gray-400"></i>Отзывы клиентов</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
+                    </button>
+                    <button onclick="addBlock('footer')" class="w-full text-left p-2.5 border border-gray-200 rounded-lg hover:border-tilda-red transition bg-white font-semibold text-xs flex items-center justify-between">
+                        <span><i class="fa-solid fa-bullhorn mr-2 text-gray-400"></i>Подвал сайта</span>
+                        <i class="fa-solid fa-plus text-gray-300"></i>
                     </button>
                 </div>
             </aside>
 
+            <!-- Холст -->
             <main class="flex-1 overflow-y-auto p-8 bg-gray-200 flex justify-center">
-                <div id="canvas" class="w-full max-w-4xl bg-white shadow-xl min-h-[800px] relative">
-                    <div class="block-wrapper group relative border border-transparent hover:border-orange-500 transition-all">
+                <div id="canvas" class="w-full max-w-4xl bg-white shadow-xl min-h-[800px] relative mb-16">
+                    <div class="block-wrapper group relative border border-transparent hover:border-tilda-red transition-all">
                         <div class="absolute right-3 top-3 hidden group-hover:flex items-center gap-1 bg-white border p-1 rounded shadow-md z-30">
                             <button onclick="moveUp(this)" class="p-1 text-gray-600"><i class="fa-solid fa-arrow-up"></i></button>
                             <button onclick="moveDown(this)" class="p-1 text-gray-600"><i class="fa-solid fa-arrow-down"></i></button>
@@ -119,8 +216,8 @@
                         </div>
                         <section class="py-20 px-8 text-center bg-gradient-to-b from-slate-900 to-slate-800 text-white">
                             <h1 class="editable text-4xl md:text-5xl font-extrabold mb-4" contenteditable="true">Создавайте сайты с DimaPay Helper</h1>
-                            <p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Конструктор лендингов, виджетов авторизации и платежных модулей.</p>
-                            <button class="editable bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-lg font-bold transition shadow-lg" contenteditable="true">Начать работу</button>
+                            <p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Быстрый конструктор лендингов с защитой от внешнего импорта и готовыми платежными модулями.</p>
+                            <button class="editable bg-tilda-red hover:bg-orange-600 text-white px-8 py-3.5 rounded-lg font-bold transition shadow-lg" contenteditable="true">Начать работу</button>
                         </section>
                     </div>
                 </div>
@@ -128,14 +225,14 @@
         </div>
     </div>
 
-    <!-- УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ (АДМИНКА) -->
+    <!-- АДМИНКА ПОЛЬЗОВАТЕЛЕЙ -->
     <div id="userMgmtModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 relative">
             <button onclick="closeModal('userMgmtModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-users-gear text-blue-600"></i> Создание и управление пользователями</h3>
 
             <form onsubmit="createUser(event)" class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 space-y-3">
-                <div class="font-semibold text-xs text-gray-500 uppercase">Добавить нового пользователя</div>
+                <div class="font-semibold text-xs text-gray-500 uppercase">Создать нового пользователя</div>
                 <div class="grid grid-cols-3 gap-3">
                     <input type="text" id="newUsername" placeholder="Логин" class="border rounded px-3 py-2 text-sm outline-none" required>
                     <input type="password" id="newPassword" placeholder="Пароль" class="border rounded px-3 py-2 text-sm outline-none" required>
@@ -147,14 +244,14 @@
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-xs transition">Создать пользователя</button>
             </form>
 
-            <div class="font-semibold text-xs text-gray-500 uppercase mb-2">Зарегистрированные аккаунты</div>
+            <div class="font-semibold text-xs text-gray-500 uppercase mb-2">Аккаунты системы</div>
             <div class="border rounded-lg overflow-hidden">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-gray-100 text-gray-600 border-b">
                         <tr>
                             <th class="p-3">Логин</th>
                             <th class="p-3">Роль</th>
-                            <th class="p-3 text-right">Действие</th>
+                            <th class="p-3 text-right">Управление</th>
                         </tr>
                     </thead>
                     <tbody id="userTableBody" class="divide-y"></tbody>
@@ -163,23 +260,23 @@
         </div>
     </div>
 
-    <!-- WORDPRESS & БД -->
+    <!-- WORDPRESS МОДАЛКА -->
     <div id="wpModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 relative">
             <button onclick="closeModal('wpModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-brands fa-wordpress text-blue-500"></i> Настройка базы данных WordPress</h3>
-            <form onsubmit="alert('База данных успешно подключена!'); closeModal('wpModal');" class="space-y-4">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-brands fa-wordpress text-blue-500"></i> Интеграция с WordPress & MySQL</h3>
+            <form onsubmit="alert('База данных подключена!'); closeModal('wpModal');" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Адрес REST API</label>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">REST API URL</label>
                     <input type="url" value="https://dimapayconstructor.wordpress.com/wp-json" class="w-full border rounded px-3 py-2 text-sm outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Хост MySQL</label>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Хост БД</label>
                         <input type="text" value="localhost" class="w-full border rounded px-3 py-2 text-sm outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Имя БД</label>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">База данных</label>
                         <input type="text" value="wp_dimapay" class="w-full border rounded px-3 py-2 text-sm outline-none">
                     </div>
                 </div>
@@ -188,23 +285,32 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО: ВИДЖЕТ -->
+    <!-- ВИДЖЕТ МОДАЛКА -->
     <div id="widgetModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 relative">
             <button onclick="closeModal('widgetModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-code text-amber-500"></i> Код виджета</h3>
-            <textarea readonly class="w-full h-32 font-mono text-xs p-3 bg-slate-900 text-slate-200 rounded border">&lt;script src="https://dimapay.helper.tilda.ws/widget.js"&gt;&lt;/script&gt;</textarea>
-            <button onclick="navigator.clipboard.writeText(document.querySelector('#widgetModal textarea').value); alert('Код скопирован!');" class="mt-3 w-full bg-slate-800 text-white font-bold py-2 rounded text-xs">Скопировать</button>
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-code text-amber-500"></i> Код виджета DimaPay</h3>
+            <textarea readonly class="w-full h-32 font-mono text-xs p-3 bg-slate-900 text-slate-200 rounded border">&lt;script src="https://constructdimapay.github.io/widget.js"&gt;&lt;/script&gt;</textarea>
+            <button onclick="navigator.clipboard.writeText(document.querySelector('#widgetModal textarea').value); alert('Скопировано!');" class="mt-3 w-full bg-slate-800 text-white font-bold py-2 rounded text-xs">Скопировать код</button>
         </div>
     </div>
 
-    <!-- ВОДЯНОЙ ЗНАК -->
-    <div class="dimapay-watermark px-4 py-2.5 rounded-full flex items-center space-x-3 text-white text-xs font-semibold">
-        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
-        <span class="text-slate-300">Работает на <strong class="text-white font-bold">DimaPay Helper</strong></span>
+    <!-- ЧЕРНЫЙ ВОДЯНОЙ ЗНАК СО ССЫЛКОЙ -->
+    <div class="dimapay-watermark-bar">
+        <div class="dimapay-watermark-text">
+            Сайт создан в <a href="https://dimapay.helper.tilda.ws/" target="_blank" rel="noopener noreferrer"><span>конструкторе DimaPay.</span></a>
+        </div>
     </div>
 
+    <!-- JS Скрипты -->
     <script>
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67)) || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
         let usersList = [{ login: 'admin', pass: 'dimaDurov12@', role: 'Администратор' }];
 
         function handleLogin(e) {
@@ -212,6 +318,7 @@
             const loginInput = document.getElementById('loginUser').value;
             const passInput = document.getElementById('loginPass').value;
             const errDiv = document.getElementById('loginError');
+
             const foundUser = usersList.find(u => u.login === loginInput && u.pass === passInput);
 
             if (foundUser) {
@@ -258,7 +365,7 @@
             document.getElementById('newUsername').value = '';
             document.getElementById('newPassword').value = '';
             renderUserTable();
-            alert(`Пользователь ${login} успешно создан!`);
+            alert(`Пользователь ${login} успешно добавлен!`);
         }
 
         function deleteUser(index) {
@@ -270,17 +377,22 @@
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         const templates = {
-            hero: `<section class="py-20 px-8 text-center bg-gradient-to-b from-slate-900 to-slate-800 text-white"><h1 class="editable text-4xl md:text-5xl font-extrabold mb-4" contenteditable="true">Заголовок</h1><p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Описание</p></section>`,
-            authWidget: `<section class="py-12 px-6 bg-slate-50 flex justify-center"><div class="max-w-md w-full bg-white p-6 rounded-xl shadow-lg"><h2 class="editable text-xl font-bold text-center mb-4" contenteditable="true">Авторизация</h2><input type="text" placeholder="Логин" class="w-full border mb-3 p-2 rounded"><input type="password" placeholder="Пароль" class="w-full border mb-3 p-2 rounded"><button class="w-full bg-slate-900 text-white py-2 rounded">Войти</button></div></section>`,
-            tariffs: `<section class="py-12 px-6 bg-white"><h2 class="editable text-2xl font-bold text-center mb-6" contenteditable="true">Тарифы</h2><div class="grid grid-cols-2 gap-4"><div class="border p-4 rounded text-center"><h3 class="font-bold">Базовый</h3><p>0 ₽</p></div><div class="border p-4 rounded text-center bg-orange-50"><h3 class="font-bold text-orange-500">PRO</h3><p>990 ₽</p></div></div></section>`,
-            payment: `<section class="py-8 px-6 bg-slate-900 text-white text-center"><h3 class="font-bold text-lg mb-2">Оплата DimaPay</h3><button class="bg-emerald-500 text-white px-6 py-2 rounded font-bold">Оплатить 1000 ₽</button></section>`,
-            footer: `<footer class="py-6 px-4 bg-slate-900 text-gray-400 text-xs text-center"><p>© 2026 DimaPay Helper</p></footer>`
+            hero: `<section class="py-20 px-8 text-center bg-gradient-to-b from-slate-900 to-slate-800 text-white"><h1 class="editable text-4xl md:text-5xl font-extrabold mb-4" contenteditable="true">Новый Заголовок</h1><p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Описание вашего проекта</p></section>`,
+            authWidget: `<section class="py-12 px-6 bg-slate-50 flex justify-center"><div class="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border"><h2 class="editable text-xl font-bold text-center mb-4" contenteditable="true">Авторизация DimaPay</h2><input type="text" placeholder="Логин" class="w-full border mb-3 p-2 rounded text-sm"><input type="password" placeholder="Пароль" class="w-full border mb-3 p-2 rounded text-sm"><button class="w-full bg-slate-900 text-white py-2.5 rounded font-bold text-sm">Войти</button></div></section>`,
+            tariffs: `<section class="py-12 px-6 bg-white"><h2 class="editable text-2xl font-bold text-center mb-6" contenteditable="true">Тарифные планы</h2><div class="grid grid-cols-2 gap-4"><div class="border p-4 rounded text-center"><h3 class="font-bold">Базовый</h3><p class="text-2xl font-bold my-2">0 ₽</p></div><div class="border-2 border-tilda-red p-4 rounded text-center bg-orange-50/30"><h3 class="font-bold text-tilda-red">PRO</h3><p class="text-2xl font-bold my-2">990 ₽</p></div></div></section>`,
+            payment: `<section class="py-8 px-6 bg-slate-900 text-white text-center"><h3 class="font-bold text-lg mb-2">Оплата заказа</h3><button class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm">Оплатить через DimaPay</button></section>`,
+            article: `<section class="py-12 px-8 bg-white max-w-3xl mx-auto"><h2 class="editable text-2xl font-bold mb-4" contenteditable="true">Заголовок статьи</h2><p class="editable text-gray-600 leading-relaxed" contenteditable="true">Подробное текстовое описание вашей услуги или новости проекта.</p></section>`,
+            gallery: `<section class="py-12 px-6 bg-gray-50"><div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto"><div class="bg-gray-200 h-32 rounded-lg flex items-center justify-center text-gray-400 font-bold">Элемент 1</div><div class="bg-gray-200 h-32 rounded-lg flex items-center justify-center text-gray-400 font-bold">Элемент 2</div><div class="bg-gray-200 h-32 rounded-lg flex items-center justify-center text-gray-400 font-bold">Элемент 3</div></div></section>`,
+            faq: `<section class="py-12 px-6 bg-white max-w-2xl mx-auto"><h2 class="editable text-xl font-bold mb-6 text-center" contenteditable="true">Частые вопросы</h2><div class="space-y-4"><div class="border-b pb-3"><h4 class="editable font-bold text-sm" contenteditable="true">Как это работает?</h4><p class="editable text-xs text-gray-500 mt-1" contenteditable="true">Все функции доступны сразу после авторизации.</p></div></div></section>`,
+            team: `<section class="py-12 px-6 bg-gray-50 text-center"><h2 class="editable text-xl font-bold mb-6" contenteditable="true">Наша команда</h2><div class="flex justify-center space-x-6"><div class="bg-white p-4 rounded-lg shadow-sm border w-40"><div class="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2"></div><h4 class="editable font-bold text-sm" contenteditable="true">Разработчик</h4></div></div></section>`,
+            reviews: `<section class="py-12 px-6 bg-white text-center"><h2 class="editable text-xl font-bold mb-6" contenteditable="true">Отзывы</h2><div class="bg-gray-50 p-4 rounded-lg border max-w-xl mx-auto"><p class="editable text-xs italic text-gray-600" contenteditable="true">"Отличный сервис, настроили за пару минут!"</p></div></section>`,
+            footer: `<footer class="py-6 px-4 bg-tilda-dark text-gray-400 text-xs text-center"><p>© 2026 DimaPay Helper. Защищено авторским правом.</p></footer>`
         };
 
         function addBlock(type) {
             const canvas = document.getElementById('canvas');
             const wrapper = document.createElement('div');
-            wrapper.className = 'block-wrapper group relative border border-transparent hover:border-orange-500 transition-all';
+            wrapper.className = 'block-wrapper group relative border border-transparent hover:border-tilda-red transition-all';
             wrapper.innerHTML = `
                 <div class="absolute right-3 top-3 hidden group-hover:flex items-center gap-1 bg-white border p-1 rounded shadow-md z-30">
                     <button onclick="moveUp(this)" class="p-1 text-gray-600"><i class="fa-solid fa-arrow-up"></i></button>
@@ -300,7 +412,40 @@
             const clone = document.getElementById('canvas').cloneNode(true);
             clone.querySelectorAll('.absolute').forEach(e => e.remove());
             clone.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
-            const blob = new Blob([clone.innerHTML], { type: 'text/html' });
+            
+            const fullHTML = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница DimaPay Helper</title>
+    <meta name="copyright" content="Copyright © 2026 DimaPay Helper. Protected against unauthorized import.">
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <style>
+        .protected-content { -webkit-user-select: none; user-select: none; }
+        .dimapay-watermark-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 48px;
+            background-color: #0f0f0f; border-top: 1px solid #1f1f1f;
+            display: flex; align-items: center; justify-content: center; z-index: 99999;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .dimapay-watermark-text { color: #ffffff; font-size: 14px; font-weight: 700; }
+        .dimapay-watermark-text a { text-decoration: none; }
+        .dimapay-watermark-text a:hover span { text-decoration: underline; }
+        .dimapay-watermark-text span { color: #ff8562; font-weight: 700; }
+    </style>
+</head>
+<body class="bg-white protected-content pb-12" oncontextmenu="return false;">
+    ${clone.innerHTML}
+    <div class="dimapay-watermark-bar">
+        <div class="dimapay-watermark-text">
+            Сайт создан в <a href="https://dimapay.helper.tilda.ws/" target="_blank" rel="noopener noreferrer"><span>конструкторе DimaPay.</span></a>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = 'dimapay-landing.html';
