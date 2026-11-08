@@ -31,7 +31,6 @@
         }
     </script>
     <style>
-        /* Защита против импорта и копирования кода */
         .protected-content {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -44,7 +43,6 @@
             background-color: rgba(255, 133, 98, 0.05);
         }
 
-        /* Фирменный черный водяной знак */
         .dimapay-watermark-bar {
             position: fixed;
             bottom: 0;
@@ -124,7 +122,6 @@
     <!-- 2. ОСНОВНОЙ ИНТЕРФЕЙС КОНСТРУКТОРА -->
     <div id="appScreen" class="hidden flex-col min-h-screen pb-12">
         
-        <!-- Верхняя панель -->
         <header class="bg-tilda-dark text-white h-16 flex items-center justify-between px-6 shadow-md sticky top-0 z-40">
             <div class="flex items-center space-x-4">
                 <div class="flex items-center space-x-2">
@@ -156,9 +153,7 @@
             </div>
         </header>
 
-        <!-- Рабочая область -->
         <div class="flex flex-1 overflow-hidden">
-            <!-- Библиотека блоков -->
             <aside class="w-80 bg-white border-r border-gray-200 p-4 flex flex-col gap-4 overflow-y-auto">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Библиотека Блоков</h3>
                 <div class="space-y-2">
@@ -205,7 +200,6 @@
                 </div>
             </aside>
 
-            <!-- Холст -->
             <main class="flex-1 overflow-y-auto p-8 bg-gray-200 flex justify-center">
                 <div id="canvas" class="w-full max-w-4xl bg-white shadow-xl min-h-[800px] relative mb-16">
                     <div class="block-wrapper group relative border border-transparent hover:border-tilda-red transition-all">
@@ -225,12 +219,11 @@
         </div>
     </div>
 
-    <!-- АДМИНКА ПОЛЬЗОВАТЕЛЕЙ -->
+    <!-- Модалки -->
     <div id="userMgmtModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 relative">
             <button onclick="closeModal('userMgmtModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-users-gear text-blue-600"></i> Создание и управление пользователями</h3>
-
             <form onsubmit="createUser(event)" class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 space-y-3">
                 <div class="font-semibold text-xs text-gray-500 uppercase">Создать нового пользователя</div>
                 <div class="grid grid-cols-3 gap-3">
@@ -243,16 +236,11 @@
                 </div>
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-xs transition">Создать пользователя</button>
             </form>
-
             <div class="font-semibold text-xs text-gray-500 uppercase mb-2">Аккаунты системы</div>
             <div class="border rounded-lg overflow-hidden">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-gray-100 text-gray-600 border-b">
-                        <tr>
-                            <th class="p-3">Логин</th>
-                            <th class="p-3">Роль</th>
-                            <th class="p-3 text-right">Управление</th>
-                        </tr>
+                        <tr><th class="p-3">Логин</th><th class="p-3">Роль</th><th class="p-3 text-right">Управление</th></tr>
                     </thead>
                     <tbody id="userTableBody" class="divide-y"></tbody>
                 </table>
@@ -260,32 +248,21 @@
         </div>
     </div>
 
-    <!-- WORDPRESS МОДАЛКА -->
     <div id="wpModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 relative">
             <button onclick="closeModal('wpModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-brands fa-wordpress text-blue-500"></i> Интеграция с WordPress & MySQL</h3>
             <form onsubmit="alert('База данных подключена!'); closeModal('wpModal');" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">REST API URL</label>
-                    <input type="url" value="https://dimapayconstructor.wordpress.com/wp-json" class="w-full border rounded px-3 py-2 text-sm outline-none">
-                </div>
+                <div><label class="block text-xs font-bold text-gray-600 uppercase mb-1">REST API URL</label><input type="url" value="https://dimapayconstructor.wordpress.com/wp-json" class="w-full border rounded px-3 py-2 text-sm outline-none"></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Хост БД</label>
-                        <input type="text" value="localhost" class="w-full border rounded px-3 py-2 text-sm outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">База данных</label>
-                        <input type="text" value="wp_dimapay" class="w-full border rounded px-3 py-2 text-sm outline-none">
-                    </div>
+                    <div><label class="block text-xs font-bold text-gray-600 uppercase mb-1">Хост БД</label><input type="text" value="localhost" class="w-full border rounded px-3 py-2 text-sm outline-none"></div>
+                    <div><label class="block text-xs font-bold text-gray-600 uppercase mb-1">База данных</label><input type="text" value="wp_dimapay" class="w-full border rounded px-3 py-2 text-sm outline-none"></div>
                 </div>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded transition text-sm">Сохранить</button>
             </form>
         </div>
     </div>
 
-    <!-- ВИДЖЕТ МОДАЛКА -->
     <div id="widgetModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 relative">
             <button onclick="closeModal('widgetModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -295,7 +272,7 @@
         </div>
     </div>
 
-    <!-- ЧЕРНЫЙ ВОДЯНОЙ ЗНАК СО ССЫЛКОЙ -->
+    <!-- Водяной знак в интерфейсе конструктора -->
     <div class="dimapay-watermark-bar">
         <div class="dimapay-watermark-text">
             Сайт создан в <a href="https://dimapay.helper.tilda.ws/" target="_blank" rel="noopener noreferrer"><span>конструкторе DimaPay.</span></a>
@@ -318,7 +295,6 @@
             const loginInput = document.getElementById('loginUser').value;
             const passInput = document.getElementById('loginPass').value;
             const errDiv = document.getElementById('loginError');
-
             const foundUser = usersList.find(u => u.login === loginInput && u.pass === passInput);
 
             if (foundUser) {
@@ -408,6 +384,7 @@
         function moveDown(btn) { const b = btn.closest('.block-wrapper'); if(b.nextElementSibling) b.parentNode.insertBefore(b.nextElementSibling, b); }
         function removeBlock(btn) { btn.closest('.block-wrapper').remove(); }
 
+        // ЭКСПОРТ HTML (ТЕПЕРЬ СОХРАНЯЕТ ДИЗАЙН, ВОДЯНОЙ ЗНАК И ЗАЩИТУ)
         function exportHTML() {
             const clone = document.getElementById('canvas').cloneNode(true);
             clone.querySelectorAll('.absolute').forEach(e => e.remove());
@@ -421,8 +398,9 @@
     <title>Страница DimaPay Helper</title>
     <meta name="copyright" content="Copyright © 2026 DimaPay Helper. Protected against unauthorized import.">
     <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .protected-content { -webkit-user-select: none; user-select: none; }
+        .protected-content { -webkit-user-select: none; -moz-user-select: none; user-select: none; }
         .dimapay-watermark-bar {
             position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 48px;
             background-color: #0f0f0f; border-top: 1px solid #1f1f1f;
@@ -435,8 +413,12 @@
         .dimapay-watermark-text span { color: #ff8562; font-weight: 700; }
     </style>
 </head>
-<body class="bg-white protected-content pb-12" oncontextmenu="return false;">
-    ${clone.innerHTML}
+<body class="bg-white protected-content pb-16" oncontextmenu="return false;">
+    <div class="w-full max-w-4xl mx-auto bg-white shadow-xl min-h-[800px] relative">
+        ${clone.innerHTML}
+    </div>
+    
+    <!-- Встроенный водяной знак со ссылкой на экспортированный сайт -->
     <div class="dimapay-watermark-bar">
         <div class="dimapay-watermark-text">
             Сайт создан в <a href="https://dimapay.helper.tilda.ws/" target="_blank" rel="noopener noreferrer"><span>конструкторе DimaPay.</span></a>
@@ -446,10 +428,12 @@
 </html>`;
 
             const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
+            a.href = url;
             a.download = 'dimapay-landing.html';
             a.click();
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
