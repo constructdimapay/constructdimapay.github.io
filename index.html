@@ -39,7 +39,7 @@
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col protected-content" oncontextmenu="return false;">
 
-    <!-- ЭКРАН ВХОДА / РЕГИСТРАЦИИ (Без предзаполненного мусора) -->
+    <!-- ЭКРАН ВХОДА / РЕГИСТРАЦИИ -->
     <div id="loginScreen" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 border border-slate-800">
             <div class="text-center mb-6">
@@ -50,7 +50,6 @@
                 <p id="authSubtitle" class="text-xs text-gray-500">Введите логин и пароль для входа</p>
             </div>
 
-            <!-- Форма Входа -->
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">Логин</label>
@@ -61,13 +60,14 @@
                     <input type="password" id="loginPass" autocomplete="new-password" placeholder="Введите пароль" class="w-full border rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500" required>
                 </div>
                 
-                <!-- Поле выбора тарифа (скрыто при входе, показывается при регистрации) -->
                 <div id="tariffFieldBox" class="hidden">
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">Выберите тариф</label>
                     <select id="regTariff" class="w-full border rounded-lg px-3 py-2.5 text-sm outline-none bg-white">
-                        <option value="Лайт (до 10 страниц)">Лайт (до 10 страниц, 0 ₽)</option>
-                        <option value="Премиум (до 30 страниц)" selected>Премиум (до 30 страниц, 200 ₽)</option>
-                        <option value="Ультра премиум (до 100 страниц)">Ультра премиум (до 100 страниц, 568 ₽)</option>
+                        <option value="Бесплатный тариф">Бесплатный тариф (0 рублей \ Месяц)</option>
+                        <option value="Лайт 10 страниц">Лайт 10 страниц (50 рублей \ 2 Месяца)</option>
+                        <option value="Премиум 30 страниц" selected>Премиум 30 страниц (200 рублей \ Год)</option>
+                        <option value="Ультра премиум 100 старниц">Ультра премиум 100 старниц (568 рублей \ 2 года)</option>
+                        <option value="НАВСЕГДА, ∞ СТРАНИЦ">НАВСЕГДА, ∞ СТРАНИЦ (2140 руб \ НАВСЕГДА)</option>
                     </select>
                 </div>
 
@@ -77,7 +77,27 @@
             </form>
 
             <div class="mt-6 text-center text-xs">
-                <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-orange-600 hover:underline font-semibold">Нет аккаунта? Зарегистрироваться (создать пользователя)</button>
+                <button onclick="toggleAuthMode()" id="toggleAuthBtn" class="text-orange-600 hover:underline font-semibold">Нет аккаунта? Зарегистрироваться</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ИСТЕКШЕГО ТАРИФА -->
+    <div id="liteExpiredModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center border">
+            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Срок бесплатного периода истёк</h3>
+            <p class="text-xs text-gray-500 mb-6">Выберите дальнейшее действие: сменить тариф или удалить аккаунт навсегда.</p>
+            
+            <div class="space-y-3">
+                <button onclick="actionChangeTariff()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-sm transition shadow">
+                    Сменить тариф
+                </button>
+                <button onclick="actionDeleteAccountForever()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3 rounded-xl text-sm transition">
+                    Удалить аккаунт
+                </button>
             </div>
         </div>
     </div>
@@ -90,7 +110,7 @@
                     <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black px-2.5 py-1 rounded text-lg">DP</span>
                     <span class="font-bold text-lg">DimaPay <span class="text-orange-400">Helper</span></span>
                 </div>
-                <!-- Название страницы -->
+                <span id="currentUserTariffBadge" class="bg-slate-800 text-orange-300 text-xs px-3 py-1 rounded-full border border-slate-700 font-semibold"></span>
                 <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
                     <i class="fa-solid fa-pen text-xs text-orange-400"></i>
                     <input type="text" id="pageTitleInput" value="Мой сайт DimaPay" oninput="changePageTitle(this.value)" class="bg-transparent text-xs text-white outline-none font-medium w-40" title="Изменить название страницы">
@@ -101,8 +121,8 @@
                 <button onclick="openModal('templatesModal')" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-layer-group"></i> Готовые страницы
                 </button>
-                <button onclick="openModal('userMgmtModal')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-users-gear"></i> Пользователи
+                <button id="adminUsersBtn" onclick="openModal('userMgmtModal')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded hidden items-center gap-1.5 transition">
+                    <i class="fa-solid fa-users-gear"></i> Админка пользователей
                 </button>
                 <button onclick="openModal('wpModal')" class="bg-gray-800 hover:bg-gray-700 text-xs font-semibold px-3 py-2 rounded flex items-center gap-1.5 transition">
                     <i class="fa-brands fa-wordpress text-blue-400"></i> БД
@@ -138,7 +158,7 @@
 
             <!-- Центральный холст -->
             <main class="flex-1 overflow-y-auto p-8 bg-gray-200 flex justify-center">
-                <div id="canvas" class="w-full max-w-4xl bg-white shadow-xl min-h-[800px] relative">
+                <div id="canvas" class="w-full max-w-5xl bg-white shadow-xl min-h-[800px] relative">
                     <div class="block-wrapper group relative border border-transparent hover:border-tilda-red transition-all" onclick="selectBlock(this)">
                         <div class="absolute right-3 top-3 hidden group-hover:flex items-center gap-1 bg-white border p-1 rounded shadow-md z-30">
                             <button onclick="moveUp(this)" class="p-1 text-gray-600"><i class="fa-solid fa-arrow-up"></i></button>
@@ -178,40 +198,23 @@
                     <h4 class="font-bold text-sm text-gray-800">Интернет-магазин</h4>
                     <p class="text-xs text-gray-500 mt-0.5">Галерея товара, отзывы, анкета заказа и оплата DimaPay.</p>
                 </button>
-                <button onclick="loadTemplate('success')" class="text-left p-4 border rounded-xl hover:border-purple-500 hover:bg-purple-50/50 transition">
-                    <h4 class="font-bold text-sm text-gray-800">Страница благодарности</h4>
-                    <p class="text-xs text-gray-500 mt-0.5">Заголовок поздравления и управление подпиской.</p>
+                <button onclick="loadTemplate('tariffsPage')" class="text-left p-4 border rounded-xl hover:border-purple-500 hover:bg-purple-50/50 transition">
+                    <h4 class="font-bold text-sm text-gray-800">Страница тарифов</h4>
+                    <p class="text-xs text-gray-500 mt-0.5">Полная сетка всех 5 тарифов DimaPay.</p>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛКА: Управление пользователями -->
+    <!-- МОДАЛКА: Управление пользователями (ТОЛЬКО ДЛЯ АДМИНА) -->
     <div id="userMgmtModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 relative">
             <button onclick="closeModal('userMgmtModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-users-gear text-blue-600"></i> Пользователи и тарифы</h3>
-            <form onsubmit="createUser(event)" class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 space-y-3">
-                <div class="font-semibold text-xs text-gray-500 uppercase">Создать нового пользователя</div>
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="newUsername" placeholder="Логин" class="border rounded px-3 py-2 text-sm outline-none" required>
-                    <input type="password" id="newPassword" placeholder="Пароль" class="border rounded px-3 py-2 text-sm outline-none" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Тарифный план</label>
-                    <select id="newTariff" class="w-full border rounded px-3 py-2 text-sm outline-none bg-white">
-                        <option value="Лайт (до 10 страниц)">Лайт (до 10 страниц)[cite: 10]</option>
-                        <option value="Премиум (до 30 страниц)" selected>Премиум (до 30 страниц)[cite: 10]</option>
-                        <option value="Ультра премиум (до 100 страниц)">Ультра премиум (до 100 страниц)[cite: 10]</option>
-                    </select>
-                </div>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-xs transition">Создать</button>
-            </form>
-            <div class="font-semibold text-xs text-gray-500 uppercase mb-2">Аккаунты системы</div>
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-users-gear text-blue-600"></i> Панель администратора: Пользователи</h3>
             <div class="border rounded-lg overflow-hidden">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-gray-100 text-gray-600 border-b">
-                        <tr><th class="p-3">Логин</th><th class="p-3">Тариф</th><th class="p-3 text-right">Действие</th></tr>
+                        <tr><th class="p-3">Логин</th><th class="p-3">Тариф</th><th class="p-3">Дата регистрации</th><th class="p-3 text-right">Действие</th></tr>
                     </thead>
                     <tbody id="userTableBody" class="divide-y"></tbody>
                 </table>
@@ -225,7 +228,7 @@
             <button onclick="closeModal('exportModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-download text-orange-500"></i> Параметры экспорта</h3>
             <div class="space-y-4 text-sm mb-6">
-                <label class="flex items-center space-x-3 cursor-pointer bg-gray-50 p-3 rounded-lg border">
+                <label id="watermarkCheckboxLabel" class="flex items-center space-x-3 cursor-pointer bg-gray-50 p-3 rounded-lg border">
                     <input type="checkbox" id="includeWatermark" checked class="w-4 h-4 text-orange-500 rounded">
                     <div>
                         <span class="font-bold block text-gray-800">Оставить водяной знак DimaPay</span>
@@ -268,7 +271,20 @@
             }
         });
 
-        let usersList = [{ login: 'admin', pass: 'dimaDurov12@', tariff: 'Премиум (до 30 страниц)' }];
+        const TARIFF_LIMITS = {
+            'Бесплатный тариф': 5,
+            'Лайт 10 страниц': 15,
+            'Премиум 30 страниц': 30,
+            'Ультра премиум 100 старниц': 100,
+            'НАВСЕГДА, ∞ СТРАНИЦ': Infinity
+        };
+
+        let usersList = [
+            { login: 'admin', pass: 'dimaDurov12@', tariff: 'НАВСЕГДА, ∞ СТРАНИЦ', regDate: new Date().getTime(), isAdmin: true },
+            { login: 'user_lite', pass: '12345', tariff: 'Лайт 10 страниц', regDate: new Date().getTime() - (65 * 24 * 60 * 60 * 1000), isAdmin: false }
+        ];
+
+        let currentUser = null;
         let selectedBlock = null;
         let currentPageTitle = "Мой сайт DimaPay";
         let isRegisterMode = false;
@@ -285,14 +301,14 @@
             document.getElementById('loginError').classList.add('hidden');
 
             if(isRegisterMode) {
-                subtitle.innerText = "Создание нового пользователя (Регистрация)";
+                subtitle.innerText = "Создание нового аккаунта (Регистрация)";
                 submitBtn.innerText = "Зарегистрироваться";
                 toggleBtn.innerText = "Уже есть аккаунт? Войти";
                 tariffBox.classList.remove('hidden');
             } else {
                 subtitle.innerText = "Введите логин и пароль для входа";
                 submitBtn.innerText = "Войти в систему";
-                toggleBtn.innerText = "Нет аккаунта? Зарегистрироваться (создать пользователя)";
+                toggleBtn.innerText = "Нет аккаунта? Зарегистрироваться";
                 tariffBox.classList.add('hidden');
             }
         }
@@ -304,25 +320,35 @@
             const errDiv = document.getElementById('loginError');
 
             if(isRegisterMode) {
-                // Регистрация нового пользователя
-                const tariff = document.getElementById('newTariff').value;
+                const tariff = document.getElementById('regTariff').value;
                 if(usersList.some(u => u.login === loginInput)) {
                     errDiv.innerText = "Такой логин уже занят!";
                     errDiv.classList.remove('hidden');
                     return;
                 }
-                usersList.push({ login: loginInput, pass: passInput, tariff: tariff });
-                alert(`Пользователь ${loginInput} успешно создан! Теперь выполните вход.`);
+                usersList.push({ login: loginInput, pass: passInput, tariff: tariff, regDate: new Date().getTime(), isAdmin: false });
+                alert(`Аккаунт ${loginInput} успешно создан на тарифе «${tariff}»! Теперь выполните вход.`);
                 toggleAuthMode();
             } else {
-                // Вход
                 const foundUser = usersList.find(u => u.login === loginInput && u.pass === passInput);
                 if (foundUser) {
+                    currentUser = foundUser;
                     errDiv.classList.add('hidden');
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('appScreen').classList.remove('hidden');
-                    document.getElementById('appScreen').classList.add('flex');
-                    renderUserTable();
+
+                    const monthMs = 30 * 24 * 60 * 60 * 1000;
+                    const twoMonthsMs = 60 * 24 * 60 * 60 * 1000;
+                    const ageMs = new Date().getTime() - currentUser.regDate;
+
+                    const isExpired =
+                        (currentUser.tariff === 'Бесплатный тариф' && ageMs > monthMs) ||
+                        (currentUser.tariff === 'Лайт 10 страниц' && ageMs > twoMonthsMs);
+
+                    if (isExpired) {
+                        document.getElementById('liteExpiredModal').classList.remove('hidden');
+                        return;
+                    }
+
+                    enterApp();
                 } else {
                     errDiv.innerText = "Неверный логин или пароль";
                     errDiv.classList.remove('hidden');
@@ -330,12 +356,46 @@
             }
         }
 
-        function changePageTitle(val) {
-            currentPageTitle = val || "Сайт DimaPay";
-            document.getElementById('pageTitleMeta').innerText = currentPageTitle;
+        function enterApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('flex');
+            document.getElementById('currentUserTariffBadge').innerText = `Тариф: ${currentUser.tariff}`;
+
+            if (currentUser && currentUser.isAdmin) {
+                document.getElementById('adminUsersBtn').classList.remove('hidden');
+                document.getElementById('adminUsersBtn').classList.add('flex');
+            } else {
+                document.getElementById('adminUsersBtn').classList.add('hidden');
+            }
+
+            const wmCheck = document.getElementById('includeWatermark');
+            if (currentUser && (currentUser.tariff === 'Бесплатный тариф' || currentUser.tariff === 'Лайт 10 страниц')) {
+                wmCheck.checked = true;
+                wmCheck.disabled = true;
+                document.getElementById('watermarkCheckboxLabel').title = "На этом тарифе водяной знак обязателен";
+            } else {
+                wmCheck.disabled = false;
+                document.getElementById('watermarkCheckboxLabel').title = "";
+            }
+
+            renderUserTable();
+        }
+
+        function actionChangeTariff() {
+            window.location.href = "https://dimapay.helper.tilda.ws/tarif";
+        }
+
+        function actionDeleteAccountForever() {
+            if(confirm("Вы уверены, что хотите навсегда удалить аккаунт? Все данные будут стерты.")) {
+                usersList = usersList.filter(u => u.login !== currentUser.login);
+                alert("Аккаунт успешно удален навсегда.");
+                location.reload();
+            }
         }
 
         function logout() {
+            currentUser = null;
             document.getElementById('appScreen').classList.add('hidden');
             document.getElementById('appScreen').classList.remove('flex');
             document.getElementById('loginScreen').classList.remove('hidden');
@@ -351,29 +411,18 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50";
                 tr.innerHTML = `
-                    <td class="p-3 font-medium">${u.login}</td>
+                    <td class="p-3 font-medium">${u.login} ${u.isAdmin ? '<span class="text-purple-600 font-bold">(Админ)</span>' : ''}</td>
                     <td class="p-3"><span class="px-2 py-0.5 text-[10px] font-bold rounded bg-orange-100 text-orange-700">${u.tariff}</span></td>
+                    <td class="p-3 text-gray-500">${new Date(u.regDate).toLocaleDateString()}</td>
                     <td class="p-3 text-right">
-                        ${index !== 0 ? `<button onclick="deleteUser(${index})" class="text-red-500 font-semibold">Удалить</button>` : '<span class="text-gray-400">Главный</span>'}
+                        ${!u.isAdmin ? `<button onclick="deleteUserByAdmin(${index})" class="text-red-500 font-semibold">Удалить</button>` : '<span class="text-gray-400">Системный</span>'}
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function createUser(e) {
-            e.preventDefault();
-            const login = document.getElementById('newUsername').value;
-            const pass = document.getElementById('newPassword').value;
-            const tariff = document.getElementById('newTariff').value;
-            usersList.push({ login, pass, tariff });
-            document.getElementById('newUsername').value = '';
-            document.getElementById('newPassword').value = '';
-            renderUserTable();
-            alert(`Пользователь ${login} создан!`);
-        }
-
-        function deleteUser(index) {
+        function deleteUserByAdmin(index) {
             usersList.splice(index, 1);
             renderUserTable();
         }
@@ -382,12 +431,106 @@
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         const templates = {
-            hero: `<section class="py-20 px-8 text-center bg-gradient-to-b from-slate-900 to-slate-800 text-white"><h1 class="editable text-4xl md:text-5xl font-extrabold mb-4" contenteditable="true">Обложка сайта</h1><p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Главный экран с призывом к действию.</p><button class="editable bg-tilda-red text-white px-8 py-3 rounded-lg font-bold" contenteditable="true">Кнопка</button></section>`,
+            hero: `<section class="py-20 px-8 text-center bg-gradient-to-b from-slate-900 to-slate-800 text-white"><h1 class="editable text-4xl md:text-5xl font-extrabold mb-4" contenteditable="true">Создавайте сайты с DimaPay Helper</h1><p class="editable text-lg text-slate-300 max-w-2xl mx-auto mb-8" contenteditable="true">Удобный конструктор сайтов, готовые страницы и анкеты.</p><button class="editable bg-tilda-red text-white px-8 py-3.5 rounded-lg font-bold transition shadow-lg" contenteditable="true">Начать работу</button></section>`,
             title: `<section class="py-12 px-8 text-center bg-white"><h2 class="editable text-3xl font-bold mb-2" contenteditable="true">Заголовок блока</h2><p class="editable text-gray-500" contenteditable="true">Подзаголовок или описание раздела.</p></section>`,
             article: `<section class="py-12 px-8 bg-white max-w-3xl mx-auto"><h2 class="editable text-2xl font-bold mb-4" contenteditable="true">Текстовая статья</h2><p class="editable text-gray-600 leading-relaxed" contenteditable="true">Подробный текст вашей публикации.</p></section>`,
             formBlock: `<section class="py-12 px-6 bg-slate-50 flex justify-center"><div class="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border"><h2 class="editable text-xl font-bold text-center mb-4" contenteditable="true">Заполнить анкету</h2><input type="text" placeholder="Ваше Имя" class="w-full border mb-3 p-2 rounded text-sm"><input type="email" placeholder="Email / Телефон" class="w-full border mb-3 p-2 rounded text-sm"><textarea placeholder="Ваш вопрос или комментарий" class="w-full border mb-3 p-2 rounded text-sm h-20"></textarea><button class="w-full bg-tilda-red text-white py-2.5 rounded font-bold text-sm">Отправить заявку</button></div></section>`,
             authWidget: `<section class="py-12 px-6 bg-slate-50 flex justify-center"><div class="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border"><h2 class="editable text-xl font-bold text-center mb-4" contenteditable="true">Авторизация DimaPay</h2><input type="text" placeholder="Логин" class="w-full border mb-3 p-2 rounded text-sm"><input type="password" placeholder="Пароль" class="w-full border mb-3 p-2 rounded text-sm"><button class="w-full bg-slate-900 text-white py-2.5 rounded font-bold text-sm">Войти</button></div></section>`,
-            tariffs: `<section class="py-12 px-6 bg-white"><h2 class="editable text-2xl font-bold text-center mb-6" contenteditable="true">Тарифные планы</h2><div class="grid grid-cols-2 gap-4"><div class="border p-4 rounded text-center"><h3 class="font-bold">Лайт (10 страниц)</h3><p class="text-xl font-bold my-2">0 ₽</p></div><div class="border-2 border-tilda-red p-4 rounded text-center bg-orange-50/30"><h3 class="font-bold text-tilda-red">Премиум (30 стр)</h3><p class="text-xl font-bold my-2">200 ₽</p></div></div></section>`,
+            tariffs: `
+            <section class="py-14 px-6 bg-white">
+                <h2 class="editable text-3xl font-extrabold text-center mb-10" contenteditable="true">Тарифные планы</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="border rounded-xl p-6 text-center flex flex-col justify-between bg-gray-50/40">
+                        <div>
+                            <div class="w-12 h-12 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center text-gray-600"><i class="fa-regular fa-star"></i></div>
+                            <h3 class="font-bold text-lg mb-4">Бесплатный тариф</h3>
+                            <ul class="text-xs text-gray-600 divide-y border-t border-b mb-6">
+                                <li class="py-2.5">5 страниц на создание</li>
+                                <li class="py-2.5">Редактирование недоступно</li>
+                                <li class="py-2.5">Месяц бесплатно, далее выбор другого тарифа или удаление страницы</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-base mb-4">0 рублей \\ Месяц</div>
+                            <a href="https://dimapay.helper.tilda.ws/tarif" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-5 py-2.5 rounded-full transition">Заполнить анкету</a>
+                        </div>
+                    </div>
+
+                    <div class="border rounded-xl p-6 text-center flex flex-col justify-between bg-gray-50/40">
+                        <div>
+                            <div class="w-12 h-12 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center text-gray-600"><i class="fa-regular fa-star"></i></div>
+                            <h3 class="font-bold text-lg mb-4">Лайт 10 страниц</h3>
+                            <ul class="text-xs text-gray-600 divide-y border-t border-b mb-6">
+                                <li class="py-2.5">15 страниц на создание</li>
+                                <li class="py-2.5">2 месяца бесплатно, далее выбор другого тарифа или удаление страницы</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-base mb-4">50 рублей \\ 2 Месяца</div>
+                            <a href="https://dimapay.helper.tilda.ws/tarif" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-5 py-2.5 rounded-full transition">Заполнить анкету и оплат...</a>
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-emerald-500 rounded-xl p-6 text-center flex flex-col justify-between bg-emerald-50/20">
+                        <div>
+                            <div class="w-12 h-12 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center text-gray-600"><i class="fa-regular fa-star"></i></div>
+                            <h3 class="font-bold text-lg mb-4">Премиум 30 страниц</h3>
+                            <ul class="text-xs text-gray-600 divide-y border-t border-b mb-6">
+                                <li class="py-2.5">Большой выбор карточек и изображений</li>
+                                <li class="py-2.5">Возможность восстановить проект</li>
+                                <li class="py-2.5">Редактирование по передаче сайта</li>
+                                <li class="py-2.5">100 дней бесплатно</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-base mb-4">200 рублей \\ Год</div>
+                            <a href="https://dimapay.helper.tilda.ws/tarif" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-5 py-2.5 rounded-full transition">Заполнить анкету и оплат...</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                    <div class="border rounded-xl p-6 text-center flex flex-col justify-between bg-gray-50/40">
+                        <div>
+                            <div class="w-12 h-12 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center text-gray-600"><i class="fa-regular fa-star"></i></div>
+                            <h3 class="font-bold text-lg mb-4">Ультра премиум 100 старниц</h3>
+                            <ul class="text-xs text-gray-600 divide-y border-t border-b mb-6">
+                                <li class="py-2">Большой выбор карточек и изображений</li>
+                                <li class="py-2">Возможность восстановить проект</li>
+                                <li class="py-2">Редактирование по передаче сайта</li>
+                                <li class="py-2">150 дней бесплатно</li>
+                                <li class="py-2">Возможность выбрать необычные карточки</li>
+                                <li class="py-2">Создать страницу в отдельном сайте в Тильда и передать нам</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-base mb-4">568 рублей \\ 2 года</div>
+                            <a href="https://dimapay.helper.tilda.ws/tarif" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-5 py-2.5 rounded-full transition">Заполнить анкету и оплат...</a>
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-slate-900 rounded-xl p-6 text-center flex flex-col justify-between bg-slate-50">
+                        <div>
+                            <div class="w-12 h-12 rounded-full bg-gray-200 mx-auto mb-3 flex items-center justify-center text-gray-600"><i class="fa-solid fa-layer-group"></i></div>
+                            <h3 class="font-bold text-lg mb-4">НАВСЕГДА, ∞ СТРАНИЦ</h3>
+                            <ul class="text-xs text-gray-600 divide-y border-t border-b mb-6">
+                                <li class="py-2">Большой выбор карточек и изображений</li>
+                                <li class="py-2">Возможность восстановить проект</li>
+                                <li class="py-2">Редактирование по передаче сайта</li>
+                                <li class="py-2">300 дней бесплатно</li>
+                                <li class="py-2">Возможность выбрать необычные карточки</li>
+                                <li class="py-2">Создать страницу в отдельном сайте в Тильда и передать нам</li>
+                                <li class="py-2">Используйте самые новые блоки от Tilda Zero!</li>
+                                <li class="py-2">Больше привелегий</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="font-extrabold text-base mb-4">2140 руб \\ НАВСЕГДА</div>
+                            <a href="https://dimapay.helper.tilda.ws/tarif" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-5 py-2.5 rounded-full transition">Заполнить анкету и оплат...</a>
+                        </div>
+                    </div>
+                </div>
+            </section>`,
             payment: `<section class="py-8 px-6 bg-slate-900 text-white text-center"><h3 class="font-bold text-lg mb-2">Оплата заказа</h3><button class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm">Оплатить через DimaPay</button></section>`,
             gallery: `<section class="py-12 px-6 bg-gray-50"><div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto"><div class="bg-gray-200 h-32 rounded-lg flex items-center justify-center text-gray-400 font-bold">Фото 1</div><div class="bg-gray-200 h-32 rounded-lg flex items-center justify-center text-gray-400 font-bold">Фото 2</div><div class="bg-gray-200 h-32 rounded-lg flex items-center justify-center text-gray-400 font-bold">Фото 3</div></div></section>`,
             faq: `<section class="py-12 px-6 bg-white max-w-2xl mx-auto"><h2 class="editable text-xl font-bold mb-6 text-center" contenteditable="true">Частые вопросы</h2><div class="space-y-4"><div class="border-b pb-3"><h4 class="editable font-bold text-sm" contenteditable="true">Вопрос 1?</h4><p class="editable text-xs text-gray-500 mt-1" contenteditable="true">Ответ на частый вопрос.</p></div></div></section>`,
@@ -395,13 +538,27 @@
             footer: `<footer class="py-6 px-4 bg-tilda-dark text-gray-400 text-xs text-center"><p>© 2026 DimaPay Helper. Все права защищены.</p></footer>`
         };
 
+        function canAddMoreBlocks(addingCount = 1) {
+            if (!currentUser) return true;
+            const limit = TARIFF_LIMITS[currentUser.tariff] ?? Infinity;
+            const currentCount = document.querySelectorAll('#canvas .block-wrapper').length;
+            if (currentCount + addingCount > limit) {
+                alert(`Достигнут лимит блоков/страниц для тарифа «${currentUser.tariff}» (максимум: ${limit}).`);
+                return false;
+            }
+            return true;
+        }
+
         function loadTemplate(type) {
-            const canvas = document.getElementById('canvas');
-            canvas.innerHTML = '';
             let blocksToLoad = [];
             if(type === 'landing') blocksToLoad = ['hero', 'article', 'tariffs', 'payment', 'footer'];
             else if(type === 'shop') blocksToLoad = ['hero', 'gallery', 'formBlock', 'payment', 'footer'];
-            else if(type === 'success') blocksToLoad = ['title', 'formBlock', 'footer'];
+            else if(type === 'tariffsPage') blocksToLoad = ['tariffs', 'footer'];
+
+            if (!canAddMoreBlocks(blocksToLoad.length)) return;
+
+            const canvas = document.getElementById('canvas');
+            canvas.innerHTML = '';
 
             blocksToLoad.forEach(bType => {
                 const wrapper = document.createElement('div');
@@ -421,6 +578,7 @@
         }
 
         function addBlock(type) {
+            if (!canAddMoreBlocks(1)) return;
             const canvas = document.getElementById('canvas');
             const wrapper = document.createElement('div');
             wrapper.className = 'block-wrapper group relative border border-transparent hover:border-tilda-red transition-all';
@@ -485,7 +643,8 @@
         function removeBlock(btn) { btn.closest('.block-wrapper').remove(); }
 
         function executeExport() {
-            const includeWatermark = document.getElementById('includeWatermark').checked;
+            const forceWm = currentUser && (currentUser.tariff === 'Бесплатный тариф' || currentUser.tariff === 'Лайт 10 страниц');
+            const includeWatermark = forceWm ? true : document.getElementById('includeWatermark').checked;
             const clone = document.getElementById('canvas').cloneNode(true);
             clone.querySelectorAll('.absolute').forEach(e => e.remove());
             clone.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
@@ -523,7 +682,7 @@
     </style>
 </head>
 <body class="bg-white protected-content min-h-screen flex flex-col" oncontextmenu="return false;">
-    <div class="w-full max-w-4xl mx-auto bg-white shadow-xl relative flex-1">
+    <div class="w-full max-w-5xl mx-auto bg-white shadow-xl relative flex-1">
         ${clone.innerHTML}
     </div>
     ${watermarkHTML}
@@ -538,6 +697,11 @@
             a.click();
             URL.revokeObjectURL(url);
             closeModal('exportModal');
+        }
+
+        function changePageTitle(val) {
+            currentPageTitle = val || "Сайт DimaPay";
+            document.getElementById('pageTitleMeta').innerText = currentPageTitle;
         }
     </script>
 </body>
